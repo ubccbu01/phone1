@@ -3,7 +3,6 @@ import './globals.css';
 import './app.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Prompt } from 'next/font/google';
-import Script from 'next/script';
 
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
@@ -156,28 +155,6 @@ export default function RootLayout({ children }) {
     <html lang="th" className={prompt.className}>
       <head>
         <link rel="shortcut icon" href="/favicon.ico" />
-
-        {/* TikTok Pixel */}
-        <Script id="tiktok-pixel" strategy="afterInteractive">
-          {`
-            !function (w, d, t) {
-              w.TiktokAnalyticsObject=t;
-              var ttq=w[t]=w[t]||[];
-              ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];
-              ttq.setAndDefer=function(t,e){
-                t[e]=function(){
-                  t.push([e].concat(Array.prototype.slice.call(arguments,0)))
-                }
-              };
-              for(var i=0;i<ttq.methods.length;i++){
-                ttq.setAndDefer(ttq,ttq.methods[i])
-              }
-              ttq.load('D4VG0AJC77U41IUN5AJG');
-              ttq.page();
-            }(window, document, 'ttq');
-          `}
-        </Script>
-
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }}
