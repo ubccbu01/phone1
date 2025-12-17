@@ -3,18 +3,19 @@ import './globals.css';
 import './app.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Prompt } from 'next/font/google';
-
-const prompt = Prompt({
-  weight: ['300', '400', '500', '700'],
-  subsets: ['thai', 'latin'],
-  display: 'swap',
-});
+import Script from 'next/script';
 
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
 import { CartProvider } from '@/components/CartContext';
 import GoogleAdsTag from '@/components/GoogleAdsTag';
+
+const prompt = Prompt({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['thai', 'latin'],
+  display: 'swap',
+});
 
 // ตั้งค่า URL หลัก
 const rawSiteUrl =
@@ -101,7 +102,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  // WebSite + Sitelinks Search Box
   const ldJsonWebsite = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -112,18 +112,9 @@ export default function RootLayout({ children }) {
     inLanguage: 'th-TH',
     publisher: {
       '@id': `${siteUrl}#organization`
-    },
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${siteUrl}/search?q={search_term_string}`
-      },
-      'query-input': 'required name=search_term_string'
     }
   };
 
-  // Organization
   const ldJsonOrganization = {
     '@context': 'https://schema.org',
     '@type': 'MobilePhoneStore',
@@ -136,36 +127,9 @@ export default function RootLayout({ children }) {
       url: logoImage,
       width: 112,
       height: 112
-    },
-    contactPoint: [
-      ...(contactPhone
-        ? [
-          {
-            '@type': 'ContactPoint',
-            telephone: contactPhone,
-            contactType: 'customer service',
-            areaServed: 'TH',
-            availableLanguage: 'Thai'
-          }
-        ]
-        : []),
-      ...(contactEmail
-        ? [
-          {
-            '@type': 'ContactPoint',
-            email: contactEmail,
-            contactType: 'customer service'
-          }
-        ]
-        : [])
-    ],
-    sameAs: [
-      // ใส่ลิงก์ Facebook / Line OA ถ้ามี
-      // 'https://www.facebook.com/pgmobile',
-    ]
+    }
   };
 
-  // Breadcrumb โครงเว็บหลัก
   const ldJsonBreadcrumb = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -175,65 +139,63 @@ export default function RootLayout({ children }) {
         position: 1,
         name: 'หน้าหลัก',
         item: siteUrl
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'สินค้า',
-        item: `${siteUrl}/products`
       }
     ]
   };
 
-  // WebPage สำหรับหน้าแรก
   const ldJsonWebPage = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${siteUrl}#webpage`,
     url: siteUrl,
     name: 'pg mobile | แหล่งรวมมือถือคุณภาพ ประกันศูนย์ไทย',
-    inLanguage: 'th-TH',
-    isPartOf: {
-      '@id': `${siteUrl}#website`
-    },
-    about: {
-      '@id': `${siteUrl}#organization`
-    }
+    inLanguage: 'th-TH'
   };
 
   return (
     <html lang="th" className={prompt.className}>
       <head>
-        <link
-          rel="shortcut icon"
-          href="/favicon.ico"
-          type="image/x-icon"
+        <link rel="shortcut icon" href="/favicon.ico" />
+
+        {/* TikTok Pixel */}
+        <Script id="tiktok-pixel" strategy="afterInteractive">
+          {`
+            !function (w, d, t) {
+              w.TiktokAnalyticsObject=t;
+              var ttq=w[t]=w[t]||[];
+              ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];
+              ttq.setAndDefer=function(t,e){
+                t[e]=function(){
+                  t.push([e].concat(Array.prototype.slice.call(arguments,0)))
+                }
+              };
+              for(var i=0;i<ttq.methods.length;i++){
+                ttq.setAndDefer(ttq,ttq.methods[i])
+              }
+              ttq.load('D4VG0AJC77U41IUN5AJG');
+              ttq.page();
+            }(window, document, 'ttq');
+          `}
+        </Script>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(ldJsonWebsite)
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonOrganization) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(ldJsonOrganization)
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonBreadcrumb) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(ldJsonBreadcrumb)
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(ldJsonWebPage)
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebPage) }}
         />
       </head>
+
       <body>
         <CartProvider>
           <GoogleAdsTag />
