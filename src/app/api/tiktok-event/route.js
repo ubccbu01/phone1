@@ -16,7 +16,7 @@ export async function POST(req) {
         event_source_id: process.env.TIKTOK_PIXEL_ID,
         data: [
           {
-            event: "ClickButton",
+            event: body.event || "ClickButton",
             event_time: Math.floor(Date.now() / 1000),
             page: {
               url: body.url,
@@ -33,4 +33,3 @@ export async function POST(req) {
   const result = await res.json();
   return NextResponse.json(result);
 }
-
