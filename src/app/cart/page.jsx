@@ -56,8 +56,26 @@ const CartPage = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+const sendTikTokClickEvent = () => {
+  fetch('/api/tiktok-event', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+      event: 'ClickButton',
+    }),
+  });
+};
+
+
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+  // ✅ ยิง TikTok Event แค่กดปุ่ม
+  sendTikTokClickEvent();
+   
     if (!items.length) {
       alert('กรุณาเลือกสินค้าใส่ตะกร้าก่อนทำการสั่งซื้อ');
       return;
